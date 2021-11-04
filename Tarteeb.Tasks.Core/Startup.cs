@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Tarteeb.Tasks.Core.Data;
 
 namespace Tarteeb.Tasks.Core
 {
@@ -23,9 +24,11 @@ namespace Tarteeb.Tasks.Core
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Tarteeb.Tasks.Core", Version = "v1" });
             });
+            //Register DI
+            services.AddTransient<IDbConnectionFactory, DbConnectionFactory>();
         }
 
- 
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
