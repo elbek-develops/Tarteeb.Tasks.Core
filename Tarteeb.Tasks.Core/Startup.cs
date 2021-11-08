@@ -10,12 +10,12 @@ namespace Tarteeb.Tasks.Core
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)=> Configuration = configuration;
-        
+        public Startup(IConfiguration configuration) => Configuration = configuration;
+
 
         public IConfiguration Configuration { get; }
 
-       
+
         public void ConfigureServices(IServiceCollection services)
         {
 
@@ -26,6 +26,7 @@ namespace Tarteeb.Tasks.Core
             });
             //Register DI
             services.AddTransient<IDbConnectionFactory, DbConnectionFactory>();
+            services.AddCors();
         }
 
 
@@ -34,14 +35,18 @@ namespace Tarteeb.Tasks.Core
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tarteeb.Tasks.Core v1"));
             }
-
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tarteeb.Tasks.Core v1"));
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            // global cors policy
+            app.UseCors(x => x
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .SetIsOriginAllowed(origin => true) // allow any origin
+                .AllowCredentials()); // allow credentials
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => endpoints.MapControllers());

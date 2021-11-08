@@ -68,11 +68,17 @@ namespace Tarteeb.Tasks.Core.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult> Delete([FromBody] Model.Task task)
+        [Route("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
         {
             using (var connection = factory.GetConnection())
             {
                 connection.Open();
+                var task = await connection.GetAsync<Model.Task>(id);
+                if (task is null)
+                {
+                    return NotFound();
+                }
                 int affectedRows = await connection.DeleteAsync(task);
                 connection.Close();
 
